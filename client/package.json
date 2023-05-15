@@ -1,0 +1,23 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "",
+  "chromium-args": "--enable-logging=stderr",
+  "main": "build/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "serve": "nodemon index.ts",
+    "build": "tsc",
+    "start": "npm run build && electron .",
+    "electron": "electron",
+    "electron-build": "ng build --prod && npm run electron"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^24.1.3",
+    "nodemon": "^2.0.22",
+    "ts-node": "^10.9.1"
+  }
+}

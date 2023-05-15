@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+        <meta
+        http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self'"
+        />
+        <meta
+        http-equiv="X-Content-Security-Policy"
+        content="default-src 'self'; script-src 'self'"
+            />
+            <title>UDP чат</title>
+            <link rel="stylesheet" href="./style.css">
+        </head>
+    <body class="chat">
+        <div id="auth" class='chat-auth'>
+            <h2>UDP Чат</h1>
+            <label for="nickname">Имя: </label>
+            <input id="nickname"></h3>
+            <p><input id="btnConnect" type="submit" class='chat-form__submit' value="Подключиться"></input></p>
+        </div>
+        <div id="chat" class='chat-input' hidden>
+            <div class='chat-messages__content' id='messages'>
+            </div>
+            <input type="text" id="messageInput">
+            <input id="btnSendMsg" type="submit" class='chat-form__submit' value="Отправить"></button>
+        </div>
+    </body>
+    <script src="./source/renderer.js" defer></script>
+</html>

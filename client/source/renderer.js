@@ -1,43 +1,53 @@
-const Messages = [];
-
 const auth = () => {
-    document.getElementById("chat").hidden = false;
-    document.getElementById("auth").hidden = true;
-    const nickname = document.getElementById("nickname").value;
-    Api.connect(nickname);
+  //Api.connect();
+  /*setInterval(() => {
+    const msgs = Api.getMsgs(Messages.length);
 
-    setInterval(() => {
-        const msgs = Api.getMsgs(Messages.length);
-
-        if(msgs) {
-            Messages.push(...msgs);
-            msgs.forEach(el => pushMessage(el));
-        }
-    }, 100);
+    if (msgs) {
+      Messages.push(...msgs);
+      msgs.forEach((el) => pushMessage(el));
+    }
+  }, 100);*/
 };
 
+Api.connect();
+
 const pushMessage = (message) => {
-    messages.insertAdjacentHTML('beforeend', 
+  messages.insertAdjacentHTML(
+    "beforeend",
     `<div class='chat__message'><b>${message[0]}: </b>${message[1]}</div>`
-    );
-    const obj = document.getElementById("messages");
-    obj.scrollTop = obj.scrollHeight;
+  );
+  const obj = document.getElementById("messages");
+  obj.scrollTop = obj.scrollHeight;
 };
 
 const sendMessage = () => {
-    const input = document.getElementById("messageInput");
+  const input = document.getElementById("messageInput");
 
-    if(input == "") return;
-    
-    Api.sendMessage(input.value);
-    input.value = "";
+  if (input == "") return;
+
+  Api.sendMessage(input.value);
+  input.value = "";
 };
 
-document.getElementById('btnConnect').addEventListener("click", auth);
-document.getElementById('btnSendMsg').addEventListener("click", sendMessage);
+const drawFigure = (event) => {
+  const td = event.target.closest("td");
+  const role = Api.getRole();
+  if (
+    td.classList.contains("cross") ||
+    td.classList.contains("circle") ||
+    role == "other"
+  )
+    return;
+  td.classList.add(role);
+  Api.drawFigure(td.dataset.row, td.dataset.column);
+};
 
-document.getElementById('messageInput').addEventListener("keydown", (ev) => {
-    if(ev.code == 'Enter') {
-        sendMessage();
-    } 
-});
+const tds = document.querySelectorAll("#ttt td");
+if (tds.length) {
+  tds.forEach((td) => {
+    td.addEventListener("click", drawFigure);
+  });
+}
+
+window.addEventListener("beforeunload", Api.closeConnection);

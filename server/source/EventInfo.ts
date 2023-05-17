@@ -2,16 +2,16 @@ import { dataTypeCh, eventCh } from "./types";
 
 export class EventInfo {
   public readonly eventType: eventCh;
-  public port: number;
+  public nickname: string;
   public readonly data: dataTypeCh;
 
   public constructor(
     eventType: eventCh = "",
     data: dataTypeCh = "",
-    port: number = 1333
+    nick: string = "~server~"
   ) {
     this.eventType = eventType;
-    this.port = port;
+    this.nickname = nick;
     this.data = data;
   }
 

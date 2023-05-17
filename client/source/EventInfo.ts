@@ -2,7 +2,7 @@ import { dataTypeCh, eventCh } from "./types";
 
 export class EventInfo {
   public eventType: eventCh;
-  public port: number = 1333;
+  public nickname: string = "~server~";
   public data: dataTypeCh;
 
   public constructor(eventType: eventCh, data: dataTypeCh) {

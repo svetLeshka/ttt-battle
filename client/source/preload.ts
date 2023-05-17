@@ -5,8 +5,12 @@ import { connectEnum } from "./constants";
 export let clientChat: ClientChat | null = null;
 
 contextBridge.exposeInMainWorld("Api", {
-  connect: (Port: number = 1333, Address: string = "127.0.0.1") => {
-    clientChat = new ClientChat(Port, Address);
+  connect: (
+    nick: string,
+    Port: number = 1333,
+    Address: string = "127.0.0.1"
+  ) => {
+    clientChat = new ClientChat(nick, Port, Address);
     //clientChat.startReceiving();
   },
   sendMessage: (msg: string) => {

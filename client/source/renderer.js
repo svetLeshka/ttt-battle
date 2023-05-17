@@ -1,16 +1,18 @@
 const auth = () => {
-  //Api.connect();
-  /*setInterval(() => {
-    const msgs = Api.getMsgs(Messages.length);
+  document.getElementById("ttt").hidden = false;
+  document.getElementById("auth").hidden = true;
+  const nickname = document.getElementById("nickname").value;
+  Api.connect(nickname);
 
-    if (msgs) {
-      Messages.push(...msgs);
-      msgs.forEach((el) => pushMessage(el));
-    }
+  /*setInterval(() => {
+      const msgs = Api.getMsgs(Messages.length);
+
+      if(msgs) {
+          Messages.push(...msgs);
+          msgs.forEach(el => pushMessage(el));
+      }
   }, 100);*/
 };
-
-Api.connect();
 
 const pushMessage = (message) => {
   messages.insertAdjacentHTML(
@@ -51,3 +53,12 @@ if (tds.length) {
 }
 
 window.addEventListener("beforeunload", Api.closeConnection);
+
+document.getElementById("btnConnect").addEventListener("click", auth);
+
+document.getElementById("nickname").addEventListener("keydown", (ev) => {
+  if (ev.code == "Enter") {
+    const click = new Event("click");
+    document.getElementById("btnConnect").dispatchEvent(click);
+  }
+});

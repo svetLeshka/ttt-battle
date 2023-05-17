@@ -7,6 +7,7 @@ import { connectEnum, eventEnum } from "./constants";
 export class ClientChat {
   private timer: NodeJS.Timer | null = null;
   public readonly Client: UDP.Socket;
+  public readonly nickname: string;
   public Address: string;
   public Port: number;
   public Messages: [string, string][] = [];
@@ -22,15 +23,20 @@ export class ClientChat {
     this.emitter.on(eventName, handler);
   }
 
-  public constructor(Port: number = 1333, Address: string = "127.0.0.1") {
+  public constructor(
+    nick: string,
+    Port: number = 1333,
+    Address: string = "127.0.0.1"
+  ) {
+    this.nickname = nick;
     this.Port = Port;
     this.Address = Address;
     this.Client = UDP.createSocket("udp4");
 
     this.Client.on("message", (msg, info) => {
       const data = EventInfo.fromJson(Buffer.from(msg).toString());
-      console.log(data, data.data.port, this.Port);
-      if (data.port != this.Port) return;
+      console.log(data);
+      if (data.nickname == this.nickname) return;
 
       if (data.eventType == eventEnum.RECIVE_MOVE) {
         console.log(data.data);
@@ -58,11 +64,17 @@ export class ClientChat {
     });
 
     this.Client.on("close", () => {
-      const closing = new EventInfo(eventEnum.CLOSED, this.role);
+      const closing =
+        this.role == connectEnum.KRESTIK || this.role == connectEnum.NOLIK
+          ? new EventInfo(eventEnum.CLOSED, this.role)
+          : new EventInfo(eventEnum.CLOSED, {
+              role: this.role,
+              nickname: this.nickname,
+            });
       this.sendServerData(closing.toString());
     });
 
-    const connectToServer = new EventInfo(eventEnum.CONNECT, null);
+    const connectToServer = new EventInfo(eventEnum.CONNECT, this.nickname);
     this.Client.connect(this.Port, this.Address, () => {
       this.sendServerData(connectToServer.toString());
     });
@@ -77,6 +89,7 @@ export class ClientChat {
   }
 
   private sendServerData(data: string) {
+    console.log(data);
     const buffer = Buffer.from(data);
     this.Client.send(buffer);
   }

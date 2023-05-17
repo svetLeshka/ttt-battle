@@ -17,7 +17,7 @@ export interface IMove {
 }
 
 export interface IPlayers {
-  krestik: number | null;
-  nolik: number | null;
-  other: number[];
+  krestik: string | null;
+  nolik: string | null;
+  other: string[];
 }

@@ -11,12 +11,6 @@ contextBridge.exposeInMainWorld("Api", {
     Address: string = "127.0.0.1"
   ) => {
     clientChat = new ClientChat(nick, Port, Address);
-    //clientChat.startReceiving();
-  },
-  sendMessage: (msg: string) => {
-    if (clientChat) {
-      clientChat.sendMessage(msg);
-    }
   },
   getMsgs: (cnt: number) => {
     if (clientChat) {
@@ -30,6 +24,12 @@ contextBridge.exposeInMainWorld("Api", {
   },
   getRole: () => {
     return clientChat?.getRole();
+  },
+  getSide: () => {
+    return clientChat?.getSide();
+  },
+  getReady: () => {
+    return clientChat?.getReady();
   },
   drawFigure: (row: number, column: number) => {
     clientChat?.drawFigure(row, column);

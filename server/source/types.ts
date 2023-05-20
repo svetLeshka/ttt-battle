@@ -8,9 +8,10 @@ export type eventCh =
 export type dataTypeCh = string | number | boolean | any;
 
 export type playerString = "krestik" | "nolik";
+export type fieldString = "X" | "O";
 
 export interface IMove {
-  port: number;
+  nickname: string;
   side: string;
   row: number;
   column: number;

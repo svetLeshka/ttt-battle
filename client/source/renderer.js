@@ -3,42 +3,21 @@ const auth = () => {
   document.getElementById("auth").hidden = true;
   const nickname = document.getElementById("nickname").value;
   Api.connect(nickname);
-
-  /*setInterval(() => {
-      const msgs = Api.getMsgs(Messages.length);
-
-      if(msgs) {
-          Messages.push(...msgs);
-          msgs.forEach(el => pushMessage(el));
-      }
-  }, 100);*/
 };
 
-const pushMessage = (message) => {
-  messages.insertAdjacentHTML(
-    "beforeend",
-    `<div class='chat__message'><b>${message[0]}: </b>${message[1]}</div>`
-  );
-  const obj = document.getElementById("messages");
-  obj.scrollTop = obj.scrollHeight;
-};
-
-const sendMessage = () => {
-  const input = document.getElementById("messageInput");
-
-  if (input == "") return;
-
-  Api.sendMessage(input.value);
-  input.value = "";
-};
+const table = document.querySelector("#ttt");
 
 const drawFigure = (event) => {
   const td = event.target.closest("td");
   const role = Api.getRole();
+  const side = Api.getSide();
+  const ready = Api.getReady();
   if (
-    td.classList.contains("cross") ||
-    td.classList.contains("circle") ||
-    role == "other"
+    td.classList.contains("krestik") ||
+    td.classList.contains("nolik") ||
+    role == "other" ||
+    side != role ||
+    !ready
   )
     return;
   td.classList.add(role);
@@ -60,5 +39,28 @@ document.getElementById("nickname").addEventListener("keydown", (ev) => {
   if (ev.code == "Enter") {
     const click = new Event("click");
     document.getElementById("btnConnect").dispatchEvent(click);
+  }
+});
+
+const handleMove = (event) => {
+  const side = event.detail.side;
+  const row = event.detail.row;
+  const column = event.detail.column;
+  const td = table.querySelector(
+    `tbody > tr:nth-child(${row}) > td:nth-child(${column})`
+  );
+  if (!td.classList.contains(side)) td.classList.add(side);
+};
+
+document.addEventListener("recieveMove", handleMove);
+
+const regame = (event) => {
+  Api.connect(event.detail.nickname);
+};
+
+document.addEventListener("re", regame);
+document.addEventListener("startGame", () => {
+  for (const td of tds) {
+    td.removeAttribute("class");
   }
 });

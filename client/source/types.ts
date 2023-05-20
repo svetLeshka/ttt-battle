@@ -16,5 +16,7 @@ export interface IMove {
 export interface IPlayers {
   krestik: number | null;
   nolik: number | null;
-  other: number[];
+  other?: number[];
 }
+
+export type playersType = "krestik" | "nolik";

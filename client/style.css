@@ -1,50 +1,76 @@
 .chat {
-  border: 1px solid #333;
+  border: 15px solid #201f1f;
   margin: 15px;
   width: fit-content;
-  background: #555;
+  background: #262626;
   color: #fff;
 }
 
 #ttt td {
   width: 150px;
   height: 150px;
-  border: 1px solid #333;
+  border: 1px solid #201f1f;
   padding: 0;
-  background-color: #fff;
+  background-color: #373638;
   position: relative;
 }
 
 #ttt td.nolik::before {
   content: "";
-  width: calc(100% - 20px);
-  height: calc(100% - 20px);
+  width: calc(100% - 50px);
+  height: calc(100% - 50px);
   border-radius: 50%;
-  box-shadow: inset 0 0 0 10px #28038f;
+  border: 4px solid #4d1dd3;
+  box-shadow: 0px 0px 0px 2px #8868e2, 
+              0px 0px 0px 4px #c4b4f0, 
+              0px 0px 0px 5px #fff, 
+              0px 0px 0px 7px #c4b4f0, 
+              0px 0px 0px 9px #8868e2, 
+              0px 0px 0px 14px #4d1dd3;
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translateX(-50%) translateY(-50%);
+  opacity: 0;
+  animation: show 2s 1;
+  animation-fill-mode: forwards;
 }
 
 #ttt td.krestik::before {
   content: "";
-  width: calc(100% - 20px);
-  height: 10px;
-  background-color: #be5f06;
+  width: calc(100% - 0px);
+  height: 15px;
+  background: linear-gradient(180deg, #cd1010, #e68888, #fff, #e68888, #cd1010);
+  border-radius: 50px;
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translateX(-50%) translateY(-50%) rotateZ(-45deg);
+  opacity: 0;
+  animation: show 2s 1;
+  animation-fill-mode: forwards;
 }
 
 #ttt td.krestik::after {
   content: "";
-  width: calc(100% - 20px);
-  height: 10px;
-  background-color: #f1d9c2;
+  width: calc(100% - 0px);
+  height: 15px;
+  background: linear-gradient(180deg, #cd1010, #e68888, #fff, #e68888, #cd1010);
+  border-radius: 50px;
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translateX(-50%) translateY(-50%) rotateZ(45deg);
+  opacity: 0;
+  animation: show 2s 1;
+  animation-fill-mode: forwards;
+}
+
+@keyframes show {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }

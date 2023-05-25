@@ -2,7 +2,7 @@ const auth = () => {
   document.getElementById("ttt").hidden = false;
   document.getElementById("auth").hidden = true;
   const nickname = document.getElementById("nickname").value;
-  Api.connect(nickname);
+  Api.connect(nickname, 1333, "192.168.43.200");
 };
 
 const table = document.querySelector("#ttt");

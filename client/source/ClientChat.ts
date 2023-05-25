@@ -29,6 +29,7 @@ export class ClientChat {
     this.Port = Port;
     this.Address = Address;
     this.Client = UDP.createSocket("udp4");
+    console.log("qwe" + this.Address, this.Port);
 
     this.Client.on("message", (msg, info) => {
       let data = EventInfo.fromJson(Buffer.from(msg).toString());
@@ -36,6 +37,7 @@ export class ClientChat {
       if (data.nickname == this.nickname) return;
 
       if (data.eventType == eventEnum.RECIVE_MOVE) {
+        console.log("hod");
         console.log(eventEnum.RECIVE_MOVE, data);
         this.setMove(data);
       } else if (data.eventType == eventEnum.GET_MOVES) {
@@ -52,14 +54,16 @@ export class ClientChat {
         console.log("Connection: " + data.data.role);
         console.log(data.data);
         this.role = data.data.role;
-        this.Address = data.data.address;
-        this.Port = data.data.port;
+        //this.Address = data.data.address;
+        //this.Port = data.data.port;
+        //console.log("asd", data.data);
       } else if (data.eventType == eventEnum.GET_READY) {
         this.ready = data.data.ready ? data.data.ready : false;
       } else if (
         data.eventType == eventEnum.GAME_OVER &&
         this.role != connectEnum.OTHER
       ) {
+        console.log("over");
         setTimeout(() => {
           const resp = confirm("go next?");
           if (resp) {
@@ -75,7 +79,7 @@ export class ClientChat {
           } else {
             this.close();
           }
-        }, 500);
+        }, 1000);
       } else if (data.eventType == eventEnum.GAME_START) {
         this.side = connectEnum.KRESTIK;
         const start = new CustomEvent("startGame");

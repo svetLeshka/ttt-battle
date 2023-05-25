@@ -57,6 +57,7 @@ const HandleRecieve = async (message: Buffer, info: UDP.RemoteInfo) => {
     }
     response = new EventInfo(data.eventType, {
       role: connectEnum.KRESTIK,
+      //address: ''
     });
     HandleSend(sendEnum.SEND_TO_ONE, response, info);
     response = new EventInfo(eventEnum.PLAYER_CONNECT, {

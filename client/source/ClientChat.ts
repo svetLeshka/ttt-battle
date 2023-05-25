@@ -33,7 +33,8 @@ export class ClientChat {
 
     this.Client.on("message", (msg, info) => {
       let data = EventInfo.fromJson(Buffer.from(msg).toString());
-      //console.log(data);
+      console.log(data);
+
       if (data.nickname == this.nickname) return;
 
       if (data.eventType == eventEnum.RECIVE_MOVE) {
@@ -81,6 +82,7 @@ export class ClientChat {
           }
         }, 1000);
       } else if (data.eventType == eventEnum.GAME_START) {
+        console.log("start");
         this.side = connectEnum.KRESTIK;
         const start = new CustomEvent("startGame");
         document.dispatchEvent(start);
@@ -95,6 +97,7 @@ export class ClientChat {
 
   private connect() {
     const connectToServer = new EventInfo(eventEnum.CONNECT, this.nickname);
+    console.log("con" + this.Port, this.Address);
     this.Client.connect(this.Port, this.Address, () => {
       this.sendServerData(connectToServer.toString());
       this.postConnect();
@@ -111,7 +114,7 @@ export class ClientChat {
   private sendServerData(data: string) {
     console.log(data);
     const buffer = Buffer.from(data);
-    this.Client.send(buffer);
+    this.Client.send(buffer, this.Port, this.Address);
   }
 
   public close() {

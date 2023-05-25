@@ -57,7 +57,7 @@ const HandleRecieve = async (message: Buffer, info: UDP.RemoteInfo) => {
     }
     response = new EventInfo(data.eventType, {
       role: connectEnum.KRESTIK,
-      //address: ''
+      //port: info.port,
     });
     HandleSend(sendEnum.SEND_TO_ONE, response, info);
     response = new EventInfo(eventEnum.PLAYER_CONNECT, {
@@ -68,19 +68,20 @@ const HandleRecieve = async (message: Buffer, info: UDP.RemoteInfo) => {
     console.dir("connect nolik " + data.data);
     readyPlayers.nolik = data.data;
     users.set(data.data, info.port);
-    if (readyPlayers[connectEnum.KRESTIK] && readyPlayers[connectEnum.NOLIK]) {
-      startGame();
-      response = new EventInfo(eventEnum.GAME_START);
-      HandleSend(sendEnum.SEND_TO_ALL, response, info);
-    }
     response = new EventInfo(data.eventType, {
       role: connectEnum.NOLIK,
+      //port: info.port,
     });
     HandleSend(sendEnum.SEND_TO_ONE, response, info);
     response = new EventInfo(eventEnum.PLAYER_CONNECT, {
       role: connectEnum.NOLIK,
     });
     HandleSend(sendEnum.SEND_TO_ALL, response, info);
+    if (readyPlayers[connectEnum.KRESTIK] && readyPlayers[connectEnum.NOLIK]) {
+      startGame();
+      response = new EventInfo(eventEnum.GAME_START);
+      HandleSend(sendEnum.SEND_TO_ALL, response, info);
+    }
   } else if (data.eventType == eventEnum.CONNECT) {
     console.dir("connect other " + data.data);
     (players.other as string[]).push(data.data);

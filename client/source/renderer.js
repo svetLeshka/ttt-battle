@@ -1,8 +1,10 @@
+const ip = "192.168.43.246";
+
 const auth = () => {
   document.getElementById("ttt").hidden = false;
   document.getElementById("auth").hidden = true;
   const nickname = document.getElementById("nickname").value;
-  Api.connect(nickname, 1333, "192.168.43.246");
+  Api.connect(nickname, 1333, ip);
 };
 
 const table = document.querySelector("#ttt");
@@ -55,7 +57,7 @@ const handleMove = (event) => {
 document.addEventListener("recieveMove", handleMove);
 
 const regame = (event) => {
-  Api.connect(event.detail.nickname);
+  Api.connect(event.detail.nickname, 1333, ip);
 };
 
 document.addEventListener("re", regame);

@@ -49,7 +49,7 @@ const HandleRecieve = async (message: Buffer, info: UDP.RemoteInfo) => {
   } else if (data.eventType == eventEnum.CONNECT && !readyPlayers.krestik) {
     console.dir("connect krestik " + data.data);
     readyPlayers.krestik = data.data;
-    users.set(data.data, info.port);
+    users.set(data.data, { port: info.port, ip: info.address });
     if (readyPlayers[connectEnum.KRESTIK] && readyPlayers[connectEnum.NOLIK]) {
       startGame();
       response = new EventInfo(eventEnum.GAME_START);
@@ -67,7 +67,7 @@ const HandleRecieve = async (message: Buffer, info: UDP.RemoteInfo) => {
   } else if (data.eventType == eventEnum.CONNECT && !readyPlayers.nolik) {
     console.dir("connect nolik " + data.data);
     readyPlayers.nolik = data.data;
-    users.set(data.data, info.port);
+    users.set(data.data, { port: info.port, ip: info.address });
     response = new EventInfo(data.eventType, {
       role: connectEnum.NOLIK,
       //port: info.port,
@@ -139,12 +139,21 @@ const HandleSend = async (
   info: UDP.RemoteInfo
 ) => {
   if (reducer == sendEnum.SEND_TO_ALL) {
-    for (const userPort of users.values()) {
-      Server.send(response.toString(), userPort);
+    for (const user of users.values()) {
+      console.dir(user.port, user.ip);
+      Server.send(response.toString(), user.port, user.ip);
     }
   } else if (reducer == sendEnum.SEND_TO_ONE) {
     console.dir(info.port, info.address);
-    Server.send(response.toString(), info.port, info.address);
+    let userSend;
+    for (const user of users.values()) {
+      console.dir(user.port, user.ip);
+      if (user.port == info.port) {
+        userSend = user;
+        break;
+      }
+    }
+    Server.send(response.toString(), userSend.port, userSend.ip);
   }
 };
 

@@ -1,11 +1,9 @@
-import { IPlayers, dataTypeCh, eventCh, playersType } from "./types";
 import UDP from "dgram";
 import Emitter from "events";
 import { EventInfo } from "./EventInfo";
 import { connectEnum, eventEnum, moves } from "./constants";
 
 export class ClientChat {
-  private timer: NodeJS.Timer | null = null;
   public readonly Client: UDP.Socket;
   public readonly nickname: string;
   public Address: string;
@@ -29,16 +27,13 @@ export class ClientChat {
     this.Port = Port;
     this.Address = Address;
     this.Client = UDP.createSocket("udp4");
-    console.log("qwe" + this.Address, this.Port);
 
     this.Client.on("message", (msg, info) => {
       let data = EventInfo.fromJson(Buffer.from(msg).toString());
-      console.log(data);
 
       if (data.nickname == this.nickname) return;
 
       if (data.eventType == eventEnum.RECIVE_MOVE) {
-        console.log("hod");
         console.log(eventEnum.RECIVE_MOVE, data);
         this.setMove(data);
       } else if (data.eventType == eventEnum.GET_MOVES) {
@@ -53,18 +48,13 @@ export class ClientChat {
           data.data.role == connectEnum.OTHER)
       ) {
         console.log("Connection: " + data.data.role);
-        console.log(data.data);
         this.role = data.data.role;
-        //this.Address = data.data.address;
-        //this.Port = data.data.port;
-        //console.log("asd", data.data);
       } else if (data.eventType == eventEnum.GET_READY) {
         this.ready = data.data.ready ? data.data.ready : false;
       } else if (
         data.eventType == eventEnum.GAME_OVER &&
         this.role != connectEnum.OTHER
       ) {
-        console.log("over");
         setTimeout(() => {
           const resp = confirm("go next?");
           if (resp) {
@@ -82,7 +72,6 @@ export class ClientChat {
           }
         }, 1000);
       } else if (data.eventType == eventEnum.GAME_START) {
-        console.log("start");
         this.side = connectEnum.KRESTIK;
         const start = new CustomEvent("startGame");
         document.dispatchEvent(start);
@@ -97,7 +86,6 @@ export class ClientChat {
 
   private connect() {
     const connectToServer = new EventInfo(eventEnum.CONNECT, this.nickname);
-    console.log("con" + this.Port, this.Address);
     this.Client.connect(this.Port, this.Address, () => {
       this.sendServerData(connectToServer.toString());
       this.postConnect();
@@ -112,7 +100,6 @@ export class ClientChat {
   }
 
   private sendServerData(data: string) {
-    console.log(data);
     const buffer = Buffer.from(data);
     this.Client.send(buffer, this.Port, this.Address);
   }

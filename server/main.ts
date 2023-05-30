@@ -1,6 +1,6 @@
 import UDP from "dgram";
 import { EventInfo } from "./source/EventInfo";
-import { IMove, IPlayers, fieldString, playerString } from "./source/types";
+import { IMove, fieldString, playerString } from "./source/types";
 import {
   moves,
   players,
@@ -57,7 +57,6 @@ const HandleRecieve = async (message: Buffer, info: UDP.RemoteInfo) => {
     }
     response = new EventInfo(data.eventType, {
       role: connectEnum.KRESTIK,
-      //port: info.port,
     });
     HandleSend(sendEnum.SEND_TO_ONE, response, info);
     response = new EventInfo(eventEnum.PLAYER_CONNECT, {
@@ -70,7 +69,6 @@ const HandleRecieve = async (message: Buffer, info: UDP.RemoteInfo) => {
     users.set(data.data, { port: info.port, ip: info.address });
     response = new EventInfo(data.eventType, {
       role: connectEnum.NOLIK,
-      //port: info.port,
     });
     HandleSend(sendEnum.SEND_TO_ONE, response, info);
     response = new EventInfo(eventEnum.PLAYER_CONNECT, {
@@ -140,14 +138,11 @@ const HandleSend = async (
 ) => {
   if (reducer == sendEnum.SEND_TO_ALL) {
     for (const user of users.values()) {
-      console.dir(user.port, user.ip);
       Server.send(response.toString(), user.port, user.ip);
     }
   } else if (reducer == sendEnum.SEND_TO_ONE) {
-    console.dir(info.port, info.address);
     let userSend;
     for (const user of users.values()) {
-      console.dir(user.port, user.ip);
       if (user.port == info.port) {
         userSend = user;
         break;

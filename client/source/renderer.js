@@ -1,4 +1,4 @@
-const ip = "192.168.43.246";
+const ip = "192.168.0.8";
 
 const auth = () => {
   document.getElementById("ttt").hidden = false;

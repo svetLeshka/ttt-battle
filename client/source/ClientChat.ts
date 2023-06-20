@@ -10,7 +10,7 @@ export class ClientChat {
   public Port: number;
   public Messages: [string, string][] = [];
   private emitter = new Emitter.EventEmitter();
-  private role: string = connectEnum.OTHER;
+  private role: string = connectEnum.KRESTIK;
   private side: string = connectEnum.KRESTIK;
   private ready = false;
 
@@ -30,7 +30,7 @@ export class ClientChat {
 
     this.Client.on("message", (msg, info) => {
       let data = EventInfo.fromJson(Buffer.from(msg).toString());
-
+      console.log(data, info);
       if (data.nickname == this.nickname) return;
 
       if (data.eventType == eventEnum.RECIVE_MOVE) {
@@ -41,54 +41,51 @@ export class ClientChat {
           data.data = move;
           this.setMove(data);
         }
-      } else if (
-        data.eventType == eventEnum.CONNECT &&
-        (data.data.role == connectEnum.KRESTIK ||
-          data.data.role == connectEnum.NOLIK ||
-          data.data.role == connectEnum.OTHER)
-      ) {
+      } else if (data.eventType == eventEnum.CONNECT) {
         console.log("Connection: " + data.data.role);
         this.role = data.data.role;
+        this.postConnect();
       } else if (data.eventType == eventEnum.GET_READY) {
         this.ready = data.data.ready ? data.data.ready : false;
-      } else if (
-        data.eventType == eventEnum.GAME_OVER &&
-        this.role != connectEnum.OTHER
-      ) {
-        setTimeout(() => {
-          const resp = confirm("go next?");
-          if (resp) {
-            const readyToStart = new EventInfo(eventEnum.READY_TO_START, {
-              role: this.role,
-            });
-            this.sendServerData(readyToStart.toString());
-            this.close();
-            const re = new CustomEvent("re", {
-              detail: { nickname: this.nickname },
-            });
-            document.dispatchEvent(re);
-          } else {
-            this.close();
-          }
-        }, 1000);
+      } else if (data.eventType == eventEnum.GAME_OVER) {
+        const go = new CustomEvent("gameOver");
+        document.dispatchEvent(go);
       } else if (data.eventType == eventEnum.GAME_START) {
         this.side = connectEnum.KRESTIK;
         const start = new CustomEvent("startGame");
         document.dispatchEvent(start);
         this.postConnect();
+      } else if (data.eventType == eventEnum.SERVER_FOUND) {
+        this.Client.disconnect();
+        this.connectToServer(data.data.address, data.data.port);
+        const start = new CustomEvent("startGame");
+        document.dispatchEvent(start);
       }
     });
 
     this.connect();
-    const start = new CustomEvent("startGame");
-    document.dispatchEvent(start);
   }
 
   private connect() {
     const connectToServer = new EventInfo(eventEnum.CONNECT, this.nickname);
     this.Client.connect(this.Port, this.Address, () => {
       this.sendServerData(connectToServer.toString());
-      this.postConnect();
+    });
+  }
+
+  private connectToServer(address: string, port: number) {
+    const oldAddress = this.Address;
+    const oldPort = this.Port;
+    this.Address = address;
+    this.Port = port;
+    const connectToServer = new EventInfo(eventEnum.PLAYER_CONNECT_TO_SERVER, {
+      nickname: this.nickname,
+      port: this.Port,
+      ip: this.Address,
+    });
+    this.Client.connect(this.Port, this.Address, () => {
+      const buffer = Buffer.from(connectToServer.toString());
+      this.Client.send(buffer, oldPort, oldAddress);
     });
   }
 
@@ -123,6 +120,18 @@ export class ClientChat {
 
   public getReady() {
     return this.ready;
+  }
+
+  public continueGame(isGameContinue: boolean) {
+    if (isGameContinue) {
+      this.close();
+      const re = new CustomEvent("re", {
+        detail: { nickname: this.nickname },
+      });
+      document.dispatchEvent(re);
+    } else {
+      this.close();
+    }
   }
 
   public drawFigure(row: number, column: number) {

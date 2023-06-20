@@ -1,21 +1,3 @@
-import { IMove, IPlayers } from "./types";
-
-export const moves: IMove[] = [];
-
-export const players: IPlayers = {
-  krestik: null,
-  nolik: null,
-  other: [],
-};
-
-export const readyPlayers: IPlayers = {
-  krestik: null,
-  nolik: null,
-  other: [],
-};
-
-export const users = new Map();
-
 export enum eventEnum {
   RECIVE_MOVE = "ReceiveMove",
   SEND_MOVE = "SendMove",
@@ -30,6 +12,9 @@ export enum eventEnum {
   READY_TO_START = "readyToStart",
   GAME_START = "gameStart",
   GET_READY = "getReady",
+  SERVER_FOUND = "serverFound",
+  PLAYER_CONNECT_TO_SERVER = "playerConnectedToServer",
+  EVENTUALLY_CONNECTED = "eventuallyConnected",
 }
 
 export enum sendEnum {

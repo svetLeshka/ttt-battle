@@ -1,4 +1,3 @@
-import { ClientChat } from "./source/ClientChat";
 import { app, BrowserWindow } from "electron";
 import path from "path";
 

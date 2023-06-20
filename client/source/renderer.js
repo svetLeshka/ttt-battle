@@ -1,4 +1,7 @@
-const ip = "192.168.0.8";
+const ip = "127.0.0.1";
+let isGameEnd = false;
+const animTimer = 2000;
+let timer = null;
 
 const auth = () => {
   document.getElementById("ttt").hidden = false;
@@ -24,6 +27,11 @@ const drawFigure = (event) => {
     return;
   td.classList.add(role);
   Api.drawFigure(td.dataset.row, td.dataset.column);
+  clearTimeout(timer);
+  timer = setTimeout(() => {
+    if (isGameEnd) gameOver();
+    timer = null;
+  }, animTimer);
 };
 
 const tds = document.querySelectorAll("#ttt td");
@@ -51,18 +59,39 @@ const handleMove = (event) => {
   const td = table.querySelector(
     `tbody > tr:nth-child(${row}) > td:nth-child(${column})`
   );
-  if (!td.classList.contains(side)) td.classList.add(side);
+  if (!td.classList.contains(side)) {
+    td.classList.add(side);
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      if (isGameEnd) gameOver();
+      timer = null;
+    }, animTimer);
+  }
 };
 
 document.addEventListener("recieveMove", handleMove);
 
+const gameOver = () => {
+  const resp = confirm("go next?");
+  Api.confirmed(resp);
+};
+
 const regame = (event) => {
-  Api.connect(event.detail.nickname, 1333, ip);
+  isGameEnd = false;
+  document.getElementById("auth").hidden = false;
+  document.getElementById("ttt").hidden = true;
+  document.dispatchEvent(new CustomEvent("startGame"));
 };
 
 document.addEventListener("re", regame);
 document.addEventListener("startGame", () => {
   for (const td of tds) {
     td.removeAttribute("class");
+  }
+});
+document.addEventListener("gameOver", () => {
+  isGameEnd = true;
+  if (timer === null) {
+    gameOver();
   }
 });

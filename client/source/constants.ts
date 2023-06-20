@@ -21,10 +21,12 @@ export enum eventEnum {
   READY_TO_START = "readyToStart",
   GAME_START = "gameStart",
   GET_READY = "getReady",
+  SERVER_FOUND = "serverFound",
+  PLAYER_CONNECT_TO_SERVER = "playerConnectedToServer",
+  EVENTUALLY_CONNECTED = "eventuallyConnected",
 }
 
 export enum connectEnum {
   KRESTIK = "krestik",
   NOLIK = "nolik",
-  OTHER = "other",
 }

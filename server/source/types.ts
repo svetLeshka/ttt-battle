@@ -20,5 +20,8 @@ export interface IMove {
 export interface IPlayers {
   krestik: string | null;
   nolik: string | null;
-  other: string[];
+}
+
+export interface IServer extends IPlayers {
+  ip: string;
 }

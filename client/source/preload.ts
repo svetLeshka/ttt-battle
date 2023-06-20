@@ -34,4 +34,7 @@ contextBridge.exposeInMainWorld("Api", {
   drawFigure: (row: number, column: number) => {
     clientChat?.drawFigure(row, column);
   },
+  confirmed: (isGameContinue: boolean) => {
+    clientChat?.continueGame(isGameContinue);
+  },
 });

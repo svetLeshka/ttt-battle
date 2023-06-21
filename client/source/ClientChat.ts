@@ -74,8 +74,6 @@ export class ClientChat {
   }
 
   private connectToServer(address: string, port: number) {
-    const oldAddress = this.Address;
-    const oldPort = this.Port;
     this.Address = address;
     this.Port = port;
     const connectToServer = new EventInfo(eventEnum.PLAYER_CONNECT_TO_SERVER, {
@@ -85,7 +83,7 @@ export class ClientChat {
     });
     this.Client.connect(this.Port, this.Address, () => {
       const buffer = Buffer.from(connectToServer.toString());
-      this.Client.send(buffer, oldPort, oldAddress);
+      this.Client.send(buffer, this.Port, this.Address);
     });
   }
 

@@ -5,6 +5,7 @@ import { ServerChild } from "./source/ServerChild";
 
 const Server = UDP.createSocket("udp4");
 let Port = 1333;
+const Address = "192.168.0.9";
 const serverName = "~server~";
 const servers = new Map<number, ServerChild>();
 
@@ -34,7 +35,13 @@ const HandleRecieve = async (message: Buffer, info: UDP.RemoteInfo) => {
     }
 
     if (!isServerFound) {
-      const newServer = new ServerChild(Port, serverName + Port);
+      const newServer = new ServerChild(
+        Port,
+        Address,
+        serverName + Port,
+        1333,
+        Address
+      );
       servers.set(Port, newServer);
       newServer.initServer().then((res) => {
         const servInfo = (res as ServerChild).getInfo();
@@ -64,4 +71,4 @@ const HandleRecieve = async (message: Buffer, info: UDP.RemoteInfo) => {
 };
 
 Server.on("message", HandleRecieve);
-Server.bind(Port);
+Server.bind(Port, Address);

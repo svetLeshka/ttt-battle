@@ -27,9 +27,18 @@ export class ServerChild {
   ];
   private readyState = false;
 
-  public constructor(port: number, serverName: string) {
+  public constructor(
+    port: number,
+    ip: string,
+    serverName: string,
+    parentP: number,
+    parentIP: string
+  ) {
     this.Port = port;
+    this.IP = ip;
     this.serverName = serverName;
+    this.parentPort = parentP;
+    this.parentIP = parentIP;
   }
 
   public getInfo() {
@@ -53,7 +62,7 @@ export class ServerChild {
       const HandleRecieve = async (message: Buffer, info: UDP.RemoteInfo) => {
         const data = EventInfo.fromJson(Buffer.from(message).toString());
         let response = new EventInfo();
-        console.dir(data);
+        //console.dir(data);
         if (data.eventType == eventEnum.GET_MOVES) {
           response = new EventInfo(data.eventType, this.moves);
           HandleSend(sendEnum.SEND_TO_ONE, response, info);
@@ -79,11 +88,9 @@ export class ServerChild {
           console.dir("connect krestik " + data.data.nickname);
           this.readyPlayers.krestik = data.data.nickname;
           this.users.set(data.data.nickname, {
-            port: data.data.info.port,
-            ip: data.data.info.ip,
+            port: info.port,
+            ip: info.address,
           });
-          this.parentPort = data.data.info.port;
-          this.parentIP = data.data.info.ip;
           if (
             this.readyPlayers[connectEnum.KRESTIK] &&
             this.readyPlayers[connectEnum.NOLIK]
@@ -95,14 +102,9 @@ export class ServerChild {
           response = new EventInfo(eventEnum.CONNECT, {
             role: connectEnum.KRESTIK,
           });
-          this.Server.send(
-            response.toString(),
-            data.data.info.port,
-            data.data.info.ip
-          );
+          this.Server.send(response.toString(), info.port, info.address);
           HandleSend(sendEnum.SEND_TO_ONE, response, {
             ...info,
-            port: data.data.info.port,
           });
           response = new EventInfo(eventEnum.PLAYER_CONNECT, {
             role: connectEnum.KRESTIK,
@@ -115,20 +117,15 @@ export class ServerChild {
           console.dir("connect nolik " + data.data.nickname);
           this.readyPlayers.nolik = data.data.nickname;
           this.users.set(data.data.nickname, {
-            port: data.data.info.port,
-            ip: data.data.info.ip,
+            port: info.port,
+            ip: info.address,
           });
           response = new EventInfo(eventEnum.CONNECT, {
             role: connectEnum.NOLIK,
           });
-          this.Server.send(
-            response.toString(),
-            data.data.info.port,
-            data.data.info.ip
-          );
+          this.Server.send(response.toString(), info.port, info.address);
           HandleSend(sendEnum.SEND_TO_ONE, response, {
             ...info,
-            port: data.data.info.port,
           });
           response = new EventInfo(eventEnum.PLAYER_CONNECT, {
             role: connectEnum.NOLIK,
@@ -201,7 +198,7 @@ export class ServerChild {
       };
 
       this.Server.on("message", HandleRecieve);
-      this.Server.bind(this.Port);
+      this.Server.bind(this.Port, this.IP);
     });
   }
 

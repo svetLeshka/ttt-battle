@@ -1,4 +1,4 @@
-const ip = "127.0.0.1";
+const ip = "192.168.0.9";
 let isGameEnd = false;
 const animTimer = 2000;
 let timer = null;
